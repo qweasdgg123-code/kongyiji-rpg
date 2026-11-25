@@ -1185,7 +1185,7 @@ function submit(btn,err){
   if(!S.picks.length){ err.textContent='請先選出你推測的兇手。'; return; }
   const bad=validReason(S.reason||''); if(bad){ err.textContent=bad; $('#reason').focus(); return; }
   err.textContent='';
-  const rec={id:S.id, name:S.name, suspects:S.picks.map(k=>CH[k].name).join('、'), reason:S.reason.trim()};
+  const rec={id:S.id, name:S.name, suspects:S.picks.map(k=>CH[k].name).join('、'), reason:S.reason.trim(), guesses:ORDER.map(k=>CH[S.guess[k]]?.name||'')};
   const ok=()=>{ S.submitted=true; S.offline=false; save(); renderDone(); };
   const fail=()=>{ btn.disabled=false; btn.textContent='呈交卷宗'; err.textContent='送出失敗了，請檢查網路後再按一次。'; };
   const hasUrl=/^https:\/\/script\.google\.com\/.+\/exec$/.test(SHEET_URL);
