@@ -1124,7 +1124,7 @@ function renderNotes(){
     const c=CH[k], a=asked(k);
     const test = a.some(Boolean) ? el('dd',{}, ...a.map((v,i)=>v? el('div',{},`【${QSHORT[i]}】${c.ans[i]}`) : el('div',{class:'pending'},`【${QSHORT[i]}】（還沒問）`))) : el('dd',{class:'pending'},'還沒審問');
     const evd = S.ev[k] ? el('dd',{}, el('button',{class:'ev-thumb',type:'button','aria-label':'放大查看'+ITEMS[c.ev].name,onclick:()=>openItem(c.ev)}, el('img',{src:ITEMS[c.ev].img,alt:''}), el('span',{},ITEMS[c.ev].name), el('small',{},'點一下放大'))) : el('dd',{class:'pending'},'用刑後才會取得');
-    const sel=el('select',{'aria-label':c.name+'覺得兇手是誰',disabled:!S.ev[k]}, el('option',{value:''}, S.ev[k]?'請選擇……':'用刑後再判斷'),
+    const sel=el('select',{'aria-label':c.name+'覺得兇手是誰',disabled:!S.ev[k]}, el('option',{value:'',disabled:!!S.ev[k],selected:!CH[S.guess[k]]}, S.ev[k]?'請選擇……':'用刑後再判斷'),
       ...ORDER.filter(x=>x!==k).map(x=>el('option',{value:x,selected:S.guess[k]===x},CH[x].name)));
     sel.onchange=()=>{ S.guess[k]=sel.value; save(); renderNotesFoot(); renderClosebox(); };
     body.append(el('div',{class:'nrow'}, el('div',{class:'who'},c.name),
@@ -1182,6 +1182,7 @@ function validReason(s){
   return '';
 }
 function submit(btn,err){
+  if(!canClose()){ err.textContent='記錄表裡還有嫌犯沒選「此人覺得兇手是誰」，請先選完。'; openNotes(); return; }
   if(!S.picks.length){ err.textContent='請先選出你推測的兇手。'; return; }
   const bad=validReason(S.reason||''); if(bad){ err.textContent=bad; $('#reason').focus(); return; }
   err.textContent='';
